@@ -1,0 +1,27 @@
+<!--index.wxml-->
+<view class="page" xmlns:wx="http://www.w3.org/1999/xhtml">
+	<view>
+		<button class="weui-btn add-button" type="primary" bindtap="add" size="mini">新增</button>
+	</view>
+	<mp-form id="form" rules="{{rules}}" models="{{formData}}">
+		<mp-cells title="查询条件">
+			<mp-cell prop="title" title="主题" ext-class="">
+				<input bindinput="bindTitle" data-field="title" class="weui-input" placeholder="请输入主题" />
+			</mp-cell>
+			<mp-cell prop="date" title="日期" ext-class="">
+				<picker data-field="date" mode="date" value="{{date}}" start="2000-01-01" end="2100-01-01" bindchange="bindDateChange">
+					<view class="weui-input">{{date}}</view>
+				</picker>
+			</mp-cell>
+		</mp-cells>
+	</mp-form>
+	<recycle-view batch="{{batchSetRecycleData}}" id="recycleId">
+		<recycle-item wx:for="{{list}}" wx:key="_id">
+			<view class="item-container">
+				<view>{{item.title}}</view>
+				<view>{{item.content}}</view>
+				<view>{{item.date}}</view>
+			</view>
+		</recycle-item>
+	</recycle-view>
+</view>
