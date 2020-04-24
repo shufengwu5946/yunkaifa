@@ -17,7 +17,7 @@
 	</mp-form>
 	<recycle-view batch="{{batchSetRecycleData}}" id="recycleId">
 		<recycle-item wx:for="{{list}}" wx:key="_id">
-			<view class="item-container">
+			<view class="item-container" data-id='{{item._id}}' bindlongpress="bindLongPress" bindtap="bindItemTap">
 				<view>{{item.title}}</view>
 				<view>{{item.content}}</view>
 				<view>{{item.date}}</view>

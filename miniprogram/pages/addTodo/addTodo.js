@@ -1,4 +1,3 @@
-//index.js
 const moment = require('moment');
 const app = getApp()
 

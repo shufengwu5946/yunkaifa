@@ -9,8 +9,6 @@ cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV
 })
 
-
-
 /**
  * 这个示例将经自动鉴权过的小程序用户 openid 返回给小程序端
  * 
@@ -21,14 +19,30 @@ exports.main = async (event, context) => {
   console.log(event)
   console.log(context)
   const db = cloud.database();
+  const _ = db.command;
   const MAX_LIMIT = 100;
   const todos = db.collection('todos');
   const countResult = await todos.count();
   const total = countResult.total;
-  const batchTimes = Math.ceil(total / 100);
+  const batchTimes = Math.ceil(total / MAX_LIMIT);
   const tasks = [];
+  let params = {};
+  if (event.title) {
+    params = {
+      ...params,
+      title: db.RegExp({
+        regexp: event.title,
+      })
+    };
+  }
+  if (event.date) {
+    params = {
+      ...params,
+      date: event.date
+    };
+  }
   for (let i = 0; i < batchTimes; i++) {
-    const promise = todos.skip(i * MAX_LIMIT).limit(MAX_LIMIT).get();
+    const promise = todos.where(params).skip(i * MAX_LIMIT).limit(MAX_LIMIT).get();
     tasks.push(promise);
   }
   return (await Promise.all(tasks)).reduce((acc, cur) => {
