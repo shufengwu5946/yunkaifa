@@ -1,0 +1,2 @@
+<!--miniprogram/pages/editTodo.wxml-->
+<todoform pageTitle="编辑Todo" bindsubmit="submitForm" title='{{title}}' date="{{date}}" content="{{content}}"></todoform>

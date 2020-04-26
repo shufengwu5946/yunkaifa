@@ -22,33 +22,38 @@ exports.main = async (event, context) => {
   const _ = db.command;
   const MAX_LIMIT = 100;
   const todos = db.collection('todos');
-  const countResult = await todos.count();
-  const total = countResult.total;
-  const batchTimes = Math.ceil(total / MAX_LIMIT);
-  const tasks = [];
-  let params = {};
-  if (event.title) {
-    params = {
-      ...params,
-      title: db.RegExp({
-        regexp: event.title,
-      })
-    };
-  }
-  if (event.date) {
-    params = {
-      ...params,
-      date: event.date
-    };
-  }
-  for (let i = 0; i < batchTimes; i++) {
-    const promise = todos.where(params).skip(i * MAX_LIMIT).limit(MAX_LIMIT).get();
-    tasks.push(promise);
-  }
-  return (await Promise.all(tasks)).reduce((acc, cur) => {
-    return {
-      data: acc.data.concat(cur.data),
-      errMsg: acc.errMsg,
+  try {
+    const countResult = await todos.count();
+    const total = countResult.total;
+    const batchTimes = Math.ceil(total / MAX_LIMIT);
+    const tasks = [];
+    let params = {};
+    if (event.title) {
+      params = {
+        ...params,
+        title: db.RegExp({
+          regexp: event.title,
+        })
+      };
     }
-  });
+    if (event.date) {
+      params = {
+        ...params,
+        date: event.date
+      };
+    }
+    for (let i = 0; i < batchTimes; i++) {
+      const promise = todos.where(params).skip(i * MAX_LIMIT).limit(MAX_LIMIT).get();
+      tasks.push(promise);
+    }
+    return (await Promise.all(tasks)).reduce((acc, cur) => {
+      return {
+        data: acc.data.concat(cur.data),
+        errMsg: acc.errMsg,
+      }
+    });
+  } catch (e) {
+    return e;
+  }
+
 }

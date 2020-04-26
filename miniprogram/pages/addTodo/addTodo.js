@@ -1,67 +1,50 @@
 const moment = require('moment');
-const app = getApp()
+const app = getApp();
 
 Page({
-  data: {
-    title: '',
-    date: moment().format('YYYY-MM-DD'),
-    content: ''
-  },
+  data: {},
 
   onLoad: function () {},
 
-  onGetUserInfo: function (e) {
-    if (!this.data.logged && e.detail.userInfo) {
-      this.setData({
-        logged: true,
-        avatarUrl: e.detail.userInfo.avatarUrl,
-        userInfo: e.detail.userInfo
-      })
-    }
-  },
-  bindTitle: function (e) {
-    this.setData({
-      title: e.detail.value
-    });
-  },
-  bindContent: function (e) {
-    this.setData({
-      content: e.detail.value
-    });
-  },
-  bindDateChange: function (e) {
-    this.setData({
-      date: e.detail.value
-    });
-  },
   refresh: function (cb) {
     var pages = getCurrentPages();
     var beforePage = pages[pages.length - 2];
     beforePage.query();
     cb();
   },
-  submitForm: function () {
-    const {
-      title,
-      content,
-      date
-    } = this.data;
+  submitForm: function (e) {
     wx.cloud.callFunction({
       name: 'addTodo',
       data: {
-        title,
-        content,
-        date
+        title: e.detail.title,
+        content: e.detail.content,
+        date: e.detail.date
       },
       success: res => {
-        this.refresh(() => {
-          wx.navigateBack({
-            delta: 1
+        if (!res.result || !res.result.errCode) {
+          wx.showToast({
+            title: '新增成功！',
+          })
+          this.refresh(() => {
+            wx.navigateBack({
+              delta: 1
+            });
           });
-        });
+        } else {
+          if (res.result.errCode) {
+            wx.showModal({
+              title: '提示',
+              content: res.result.errMsg
+            });
+          }
+        }
       },
       fail: err => {
         console.log(err);
+        wx.showModal({
+          title: '提示',
+          content: err.errMsg
+        });
       }
     })
   }

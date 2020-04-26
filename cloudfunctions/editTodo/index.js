@@ -13,7 +13,13 @@ exports.main = async (event, context) => {
   try {
     let res = await todos.where({
       _id: event.id
-    }).remove();
+    }).update({
+      data: {
+        title: event.title,
+        content: event.content,
+        date: event.date
+      }
+    });
     return res;
   } catch (e) {
     return e;

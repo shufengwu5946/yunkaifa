@@ -43,13 +43,26 @@ Page({
       name: 'queryTodo',
       data: param,
       success: res => {
-        this.setData({
-          list: res.result.data
-        });
-        console.log(res.result.data);
+        console.log(res);
+
+        if (!res.result || !res.result.errCode) {
+          this.setData({
+            list: res.result.data
+          });
+        } else {
+          if (res.result.errCode) {
+            wx.showModal({
+              title: '提示',
+              content: res.result.errMsg
+            });
+          }
+        }
       },
       fail: err => {
-        console.log(err);
+        wx.showModal({
+          title: '提示',
+          content: err.errMsg
+        });
       }
     });
   },
@@ -60,11 +73,26 @@ Page({
         id: id
       },
       success: res => {
-        console.log("res", res);
-        this.query();
+        if (!res.result || !res.result.errCode) {
+          wx.showToast({
+            title: '删除成功！',
+          })
+          this.query();
+        } else {
+          if (res.result.errCode) {
+            wx.showModal({
+              title: '提示',
+              content: res.result.errMsg
+            });
+          }
+        }
       },
       fail: err => {
         console.log("err", err);
+        wx.showModal({
+          title: '提示',
+          content: err.errMsg
+        });
       }
     });
   },
@@ -86,9 +114,8 @@ Page({
     this.delete(e.currentTarget.dataset.id);
   },
   bindItemTap: function (e) {
-    // this.setData({
-    //   showActionsheet: true
-    // });
+    console.log(e);
+
     wx.showActionSheet({
       itemList: this.data.actionSheetGroups,
       complete: (res) => {
@@ -102,7 +129,29 @@ Page({
         if (result.tapIndex === 0) {
           this.delete(e.currentTarget.dataset.id);
         } else if (result.tapIndex === 1) {
+          console.log(this.data.list);
 
+          const itemData = this.data.list.find(v => v._id === e.currentTarget.dataset.id);
+          if (itemData) {
+            wx.navigateTo({
+              url: "../editTodo/editTodo",
+              success: function (res) {
+                // 通过eventChannel向被打开页面传送数据
+                const {
+                  _id,
+                  title,
+                  content,
+                  date
+                } = itemData;
+                res.eventChannel.emit('editTodoInitData', {
+                  id: _id,
+                  title,
+                  content,
+                  date
+                })
+              }
+            });
+          }
         }
       },
     })
