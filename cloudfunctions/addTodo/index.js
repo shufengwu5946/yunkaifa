@@ -16,8 +16,6 @@ cloud.init({
  * 
  */
 exports.main = async (event, context) => {
-  console.log(event)
-  console.log(context)
   const db = cloud.database();
   const todos = db.collection('todos');
   try {

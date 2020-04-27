@@ -40,7 +40,6 @@ Page({
         }
       },
       fail: err => {
-        console.log(err);
         wx.showModal({
           title: '提示',
           content: err.errMsg

@@ -16,8 +16,6 @@ cloud.init({
  * 
  */
 exports.main = async (event, context) => {
-  console.log(event)
-  console.log(context)
   const db = cloud.database();
   const _ = db.command;
   const MAX_LIMIT = 100;

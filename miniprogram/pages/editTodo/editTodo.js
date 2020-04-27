@@ -31,7 +31,10 @@ Page({
   submitForm: function (e) {
     wx.cloud.callFunction({
       name: 'editTodo',
-      data: e.detail,
+      data: {
+        ...e.detail,
+        id: this.data.id
+      },
       success: res => {
         if (!res.result || !res.result.errCode) {
           wx.showToast({
@@ -52,46 +55,11 @@ Page({
         }
       },
       fail: err => {
-        console.log("err", err);
         wx.showModal({
           title: '提示',
           content: err.errMsg
         });
       }
     });
-    // wx.cloud.callFunction({
-    //   name: 'addTodo',
-    //   data: {
-    //     title: e.detail.title,
-    //     content: e.detail.content,
-    //     date: e.detail.date
-    //   },
-    //   success: res => {
-    //     if (!res.result || !res.result.errCode) {
-    //       wx.showToast({
-    //         title: '新增成功！',
-    //       })
-    //       this.refresh(() => {
-    //         wx.navigateBack({
-    //           delta: 1
-    //         });
-    //       });
-    //     } else {
-    //       if (res.result.errCode) {
-    //         wx.showModal({
-    //           title: '提示',
-    //           content: res.result.errMsg
-    //         });
-    //       }
-    //     }
-    //   },
-    //   fail: err => {
-    //     console.log(err);
-    //     wx.showModal({
-    //       title: '提示',
-    //       content: err.errMsg
-    //     });
-    //   }
-    // })
   }
 })

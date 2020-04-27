@@ -29,7 +29,6 @@ Component({
   data: {},
 
   onLoad: function (option) {
-    console.log(option.query);
   },
 
   /**

@@ -43,8 +43,6 @@ Page({
       name: 'queryTodo',
       data: param,
       success: res => {
-        console.log(res);
-
         if (!res.result || !res.result.errCode) {
           this.setData({
             list: res.result.data
@@ -88,7 +86,6 @@ Page({
         }
       },
       fail: err => {
-        console.log("err", err);
         wx.showModal({
           title: '提示',
           content: err.errMsg
@@ -114,8 +111,6 @@ Page({
     this.delete(e.currentTarget.dataset.id);
   },
   bindItemTap: function (e) {
-    console.log(e);
-
     wx.showActionSheet({
       itemList: this.data.actionSheetGroups,
       complete: (res) => {
@@ -129,8 +124,6 @@ Page({
         if (result.tapIndex === 0) {
           this.delete(e.currentTarget.dataset.id);
         } else if (result.tapIndex === 1) {
-          console.log(this.data.list);
-
           const itemData = this.data.list.find(v => v._id === e.currentTarget.dataset.id);
           if (itemData) {
             wx.navigateTo({
