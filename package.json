@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "miniprogram-recycle-view": "^0.1.5",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "weui-miniprogram": "^1.0.1"
   }
 }
